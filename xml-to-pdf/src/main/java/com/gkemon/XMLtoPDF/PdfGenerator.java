@@ -39,6 +39,8 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+import static com.gkemon.XMLtoPDF.PdfGenerator.PageSize.A4_LANDSCAPE;
+
 public class PdfGenerator {
 
     public static double postScriptThreshold = 0.75;
@@ -62,6 +64,7 @@ public class PdfGenerator {
          */
         A4,
 
+        A4_LANDSCAPE,
         /**
          * For standard A5 size page
          */
@@ -216,6 +219,9 @@ public class PdfGenerator {
                 } else if (pageSize == PageSize.WRAP_CONTENT) {
                     pageWidthInPixel = WRAP_CONTENT_WIDTH;
                     pageHeightInPixel = WRAP_CONTENT_HEIGHT;
+                }else if (pageSize == A4_LANDSCAPE) {
+                    pageHeightInPixel = a4WidthInPX;
+                    pageWidthInPixel = a4HeightInPX;
                 }
             } else {
                 postLog("Default page size is not found. Your custom page width is " +
@@ -223,7 +229,11 @@ public class PdfGenerator {
             }
 
             postScriptThreshold = 0.75;
-            a4HeightInPostScript = (int) (a4HeightInPX * postScriptThreshold);
+            if (pageSize == A4_LANDSCAPE) {
+                a4HeightInPostScript = a4WidthInPostScript;
+            } else {
+                a4HeightInPostScript = (int) (a4HeightInPX * postScriptThreshold);
+            }
         }
         private void print() {
 
